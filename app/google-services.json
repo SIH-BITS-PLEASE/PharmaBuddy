@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "813458582435",
+    "project_id": "sihpharmaapp",
+    "storage_bucket": "sihpharmaapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813458582435:android:b0ebf8723bdf9884ff8816",
+        "android_client_info": {
+          "package_name": "com.example.sihpharmaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "813458582435-td8q0a8j1fi3jkuk5s47m1qe78p3oblq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB3BJjruZZs1g_KLgkRudshIdpbwvCM8M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "813458582435-td8q0a8j1fi3jkuk5s47m1qe78p3oblq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
