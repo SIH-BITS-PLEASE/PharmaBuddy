@@ -10,6 +10,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.railwayqrapp.authentication.SignUpScreen
+import com.example.sihpharmaapp.authentication.AuthViewModel
+import com.example.sihpharmaapp.authentication.SignInScreen
 import com.example.sihpharmaapp.ui.theme.SIHPharmaAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +24,28 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SIHPharmaAppTheme {
+                val viewModel = viewModel<AuthViewModel>()
+                viewModel.setupFirebaseAuth()
+                val navController = rememberNavController()
+                val startDestination = if (viewModel.isUserSignedIn()) Screens.HomeScreen.route
+                else Screens.SignInScreen.route
+                NavHost(
+                    navController = navController,
+                    startDestination = startDestination
+                ) {
 
+                    composable(Screens.SignInScreen.route) {
+                        SignInScreen(navController, viewModel)
+                    }
+
+                    composable(Screens.SignUpScreen.route) {
+                        SignUpScreen(navController, viewModel)
+                    }
+
+                    composable(Screens.HomeScreen.route) {
+                        HomeScreen(navController,viewModel)
+                    }
+                }
             }
         }
     }

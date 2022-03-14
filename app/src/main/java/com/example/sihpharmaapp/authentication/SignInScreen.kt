@@ -54,8 +54,8 @@ fun SignInScreen(
     viewModel: AuthViewModel
 ) {
     val systemUiController = rememberSystemUiController()
-    systemUiController.setNavigationBarColor(Color.Red)
-    systemUiController.setSystemBarsColor(Color.Red)
+    systemUiController.setNavigationBarColor(Color.Cyan)
+    systemUiController.setSystemBarsColor(Color.Cyan)
     systemUiController.setStatusBarColor(fadedWhite)
     var emailTextState by remember {
         mutableStateOf("")
@@ -142,7 +142,7 @@ fun SignInScreen(
                 Brush.verticalGradient(
                     colors = listOf(
                         Color.White,
-                        Color.Red
+                        Color.Cyan
                     )
                 )
             )
@@ -260,16 +260,25 @@ fun ResetDialogBox(
     AlertDialog(
         backgroundColor = homeBackground,
         text = {
-            CustomTextField(
-                label = "E-mail",
-                placeholder = "Enter your E-mail Id",
-                value = dialogTextState,
-                keyboardType = KeyboardType.Email,
-                textVisible = true,
-                onValueChange = {
-                    onValueChange(it)
-                }
-            )
+            Column {
+                Text(
+                    modifier = Modifier.padding(8.dp),
+                    text = "Enter your E-mail address.",
+                    fontSize = 22.sp,
+                    color = Color.DarkGray,
+                    fontWeight = FontWeight.Bold
+                )
+                CustomTextField(
+                    label = "E-mail",
+                    placeholder = "Enter your E-mail Id",
+                    value = dialogTextState,
+                    keyboardType = KeyboardType.Email,
+                    textVisible = true,
+                    onValueChange = {
+                        onValueChange(it)
+                    }
+                )
+            }
         },
         onDismissRequest = {},
         buttons = {
@@ -277,29 +286,26 @@ fun ResetDialogBox(
                 modifier = Modifier.padding(all = 8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Button(
-                    onClick = {
-                        onSubmitClicked()
-                    },
+                CustomButton(
+                    text = "Continue",
+                    backgroundColor = buttonBackgroundColor,
                     enabled = enabled
                 ) {
-                    Text(text = "Continue")
+                    onSubmitClicked()
                 }
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                Button(
-                    onClick = {
-                        onCancelClicked()
-                    }
+                CustomButton(
+                    text = "Cancel",
+                    backgroundColor = buttonBackgroundColor,
+                    enabled = true
                 ) {
-                    Text(text = "Cancel")
+                    onCancelClicked()
                 }
             }
         },
-        title = {
-            Text(text = "Enter your email address.")
-        }
+        title = {}
     )
 }
 

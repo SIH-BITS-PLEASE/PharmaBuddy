@@ -45,8 +45,8 @@ fun SignUpScreen(
     viewModel: AuthViewModel
 ) {
     val systemUiController = rememberSystemUiController()
-    systemUiController.setNavigationBarColor(Color.Red)
-    systemUiController.setSystemBarsColor(Color.Red)
+    systemUiController.setNavigationBarColor(Color.Cyan)
+    systemUiController.setSystemBarsColor(Color.Cyan)
     systemUiController.setStatusBarColor(fadedWhite)
     Column(
         modifier = Modifier
@@ -55,7 +55,7 @@ fun SignUpScreen(
                 Brush.verticalGradient(
                     colors = listOf(
                         Color.White,
-                        Color.Red
+                        Color.Cyan
                     )
                 )
             )
