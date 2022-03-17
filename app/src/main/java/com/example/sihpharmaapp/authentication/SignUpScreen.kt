@@ -1,5 +1,6 @@
 package com.example.sihpharmaapp.authentication
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.sihpharmaapp.Screens
+import com.example.sihpharmaapp.data.User
 import com.example.sihpharmaapp.ui.theme.buttonBackgroundColor
 import com.example.sihpharmaapp.ui.theme.fadedWhite
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -75,24 +77,49 @@ fun SignUpScreen(
         }
 
         val signUpState = viewModel.signUpState.collectAsState()
+        val saveUserState = viewModel.saveUserState.collectAsState()
 
-        signUpState.value?.let { state->
-            when(state){
-                LoginState.Success ->{
+        signUpState.value?.let { state ->
+            when (state) {
+                ProgressState.Success -> {
+                    Log.d("DBTesting", "SignUpScreen: HERE")
+                    viewModel.saveUserToDB(
+                        User(
+                            viewModel.getCurrentUser()!!.uid,
+                            firstNameState,
+                            lastNameState
+                        )
+                    )
+                }
+
+                ProgressState.Loading -> {
+                    progressBarState = true
+                }
+
+                else -> {
+                    progressBarState = false
+                    Toast.makeText(context, signUpState.value.toString(), Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        saveUserState.value?.let { state ->
+            when (state) {
+                ProgressState.Success -> {
                     progressBarState = false
                     navController.navigate(Screens.HomeScreen.route) {
-                        popUpTo(Screens.SignUpScreen.route){
+                        popUpTo(Screens.SignUpScreen.route) {
                             inclusive = true
                         }
                         launchSingleTop = true
                     }
                 }
 
-                LoginState.Loading ->{
+                ProgressState.Loading -> {
                     progressBarState = true
                 }
 
-                else ->{
+                else -> {
                     progressBarState = false
                     Toast.makeText(context, signUpState.value.toString(), Toast.LENGTH_LONG).show()
                 }

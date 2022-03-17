@@ -77,7 +77,7 @@ fun SignInScreen(
     }
     dialogBoxButtonState = dialogTextState.isEmailValid()
 
-    if(dialogBoxState){
+    if (dialogBoxState) {
         ResetDialogBox(
             dialogTextState = dialogTextState,
             enabled = dialogBoxButtonState,
@@ -97,9 +97,9 @@ fun SignInScreen(
     val resetPasswordState = viewModel.resetPasswordState.collectAsState()
     val scope = rememberCoroutineScope()
 
-    signInState.value?.let { state->
-        when(state){
-            LoginState.Success ->{
+    signInState.value?.let { state ->
+        when (state) {
+            ProgressState.Success -> {
                 progressBarState = false
                 navController.navigate(Screens.HomeScreen.route) {
                     popUpTo(Screens.SignInScreen.route) {
@@ -109,29 +109,29 @@ fun SignInScreen(
                 }
             }
 
-            LoginState.Loading ->{
+            ProgressState.Loading -> {
                 progressBarState = true
             }
 
-            else ->{
+            else -> {
                 progressBarState = false
                 Toast.makeText(context, signInState.value.toString(), Toast.LENGTH_LONG).show()
             }
         }
     }
 
-    resetPasswordState.value?.let { state->
-        when(state){
-            LoginState.Success ->{
+    resetPasswordState.value?.let { state ->
+        when (state) {
+            ProgressState.Success -> {
                 progressBarState = false
                 Toast.makeText(context, "Password reset successful!", Toast.LENGTH_LONG).show()
             }
 
-            LoginState.Loading ->{
+            ProgressState.Loading -> {
                 progressBarState = true
             }
 
-            else ->{
+            else -> {
                 progressBarState = false
                 Toast.makeText(context, signInState.value.toString(), Toast.LENGTH_LONG).show()
             }

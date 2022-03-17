@@ -19,6 +19,7 @@ class MainActivity : ComponentActivity() {
             SIHPharmaAppTheme {
                 val viewModel = viewModel<AuthViewModel>()
                 viewModel.setupFirebaseAuth()
+                viewModel.setupFirestoreDB()
                 val navController = rememberNavController()
                 val startDestination = if (viewModel.isUserSignedIn()) Screens.HomeScreen.route
                 else Screens.SignInScreen.route
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(Screens.HomeScreen.route) {
-                        HomeScreen(navController,viewModel)
+                        HomeScreen(navController, viewModel)
                     }
                 }
             }

@@ -1,9 +1,9 @@
 package com.example.sihpharmaapp.authentication
 
-sealed class LoginState{
-    object Loading : LoginState()
-    data class Error(var msg: String? = null) : LoginState()
-    object Success : LoginState()
+sealed class ProgressState{
+    object Loading : ProgressState()
+    data class Error(var msg: String? = null) : ProgressState()
+    object Success : ProgressState()
 
     override fun toString(): String {
         return when(this){

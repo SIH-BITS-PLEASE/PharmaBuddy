@@ -1,9 +1,12 @@
 package com.example.sihpharmaapp.authentication
 
 import androidx.lifecycle.ViewModel
+import com.example.sihpharmaapp.data.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,54 +14,82 @@ import kotlinx.coroutines.flow.StateFlow
 class AuthViewModel : ViewModel() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
-    private val _resetPasswordState : MutableStateFlow<LoginState?> = MutableStateFlow(null)
-    val resetPasswordState : StateFlow<LoginState?> get() = _resetPasswordState
-    private val _signInState : MutableStateFlow<LoginState?> = MutableStateFlow(null)
-    val signInState : StateFlow<LoginState?> get() = _signInState
-    private val _signUpState : MutableStateFlow<LoginState?> = MutableStateFlow(null)
-    val signUpState : StateFlow<LoginState?> get() = _signUpState
+    private val _resetPasswordState: MutableStateFlow<ProgressState?> = MutableStateFlow(null)
+    val resetPasswordState: StateFlow<ProgressState?> get() = _resetPasswordState
+
+    private val _signInState: MutableStateFlow<ProgressState?> = MutableStateFlow(null)
+    val signInState: StateFlow<ProgressState?> get() = _signInState
+
+    private val _signUpState: MutableStateFlow<ProgressState?> = MutableStateFlow(null)
+    val signUpState: StateFlow<ProgressState?> get() = _signUpState
+
+    private val _saveUserState: MutableStateFlow<ProgressState?> = MutableStateFlow(null)
+    val saveUserState: StateFlow<ProgressState?> get() = _saveUserState
 
     fun setupFirebaseAuth() {
         auth = Firebase.auth
+    }
+
+    fun setupFirestoreDB() {
+        db = Firebase.firestore
     }
 
     fun isUserSignedIn(): Boolean = auth.currentUser != null
 
     fun getCurrentUser(): FirebaseUser? = auth.currentUser
 
+    fun saveUserToDB(
+        user: User
+    ) {
+        try {
+            _saveUserState.value = ProgressState.Loading
+            val userRef = db.collection("users").document(user.userId)
+            userRef.set(user).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _saveUserState.value = ProgressState.Success
+                } else {
+                    _saveUserState.value = ProgressState.Error(task.exception.toString())
+                }
+            }
+        } catch (e: Exception) {
+            _saveUserState.value = ProgressState.Error(e.message.toString())
+        }
+    }
+
     fun signInUser(
         email: String,
         password: String
     ) {
         try {
-            _signInState.value = LoginState.Loading
-            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task->
-                if(task.isSuccessful){
-                    _signInState.value = LoginState.Success
-                }else{
-                    _signInState.value = LoginState.Error(task.exception.toString())
+            _signInState.value = ProgressState.Loading
+            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _signInState.value = ProgressState.Success
+                } else {
+                    _signInState.value = ProgressState.Error(task.exception.toString())
                 }
             }
         } catch (e: Exception) {
-            _signInState.value = LoginState.Error()
+            _signInState.value = ProgressState.Error(e.message.toString())
         }
     }
 
     fun sendPasswordResetMail(
         email: String
     ) {
-        try{
-            _resetPasswordState.value = LoginState.Loading
-            auth.sendPasswordResetEmail(email).addOnCompleteListener { task->
-                if(task.isSuccessful){
-                    _resetPasswordState.value = LoginState.Success
-                }else{
-                    _resetPasswordState.value = LoginState.Error(task.exception.toString())
+        try {
+            _resetPasswordState.value = ProgressState.Loading
+            auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _resetPasswordState.value = ProgressState.Success
+                } else {
+                    _resetPasswordState.value = ProgressState.Error(task.exception.toString())
                 }
             }
-        }catch (e: Exception){
-            _resetPasswordState.value = LoginState.Error()
+        } catch (e: Exception) {
+            _resetPasswordState.value = ProgressState.Error(e.message.toString())
         }
     }
 
@@ -67,16 +98,16 @@ class AuthViewModel : ViewModel() {
         password: String
     ) {
         try {
-            _signUpState.value = LoginState.Loading
-            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task->
-                if(task.isSuccessful){
-                    _signUpState.value = LoginState.Success
-                }else{
-                    _signUpState.value = LoginState.Error(task.exception.toString())
+            _signUpState.value = ProgressState.Loading
+            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _signUpState.value = ProgressState.Success
+                } else {
+                    _signUpState.value = ProgressState.Error(task.exception.toString())
                 }
             }
         } catch (e: Exception) {
-            _signUpState.value = LoginState.Error(e.message.toString())
+            _signUpState.value = ProgressState.Error(e.message.toString())
         }
     }
 }
