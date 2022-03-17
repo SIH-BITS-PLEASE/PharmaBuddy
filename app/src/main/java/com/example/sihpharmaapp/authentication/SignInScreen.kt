@@ -16,12 +16,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +45,6 @@ import com.example.sihpharmaapp.ui.theme.buttonBackgroundColor
 import com.example.sihpharmaapp.ui.theme.fadedWhite
 import com.example.sihpharmaapp.ui.theme.homeBackground
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @Composable
@@ -53,6 +52,7 @@ fun SignInScreen(
     navController: NavController,
     viewModel: AuthViewModel
 ) {
+    val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
     systemUiController.setNavigationBarColor(Color.Cyan)
     systemUiController.setSystemBarsColor(Color.Cyan)
@@ -93,48 +93,52 @@ fun SignInScreen(
             }
         )
     }
-
-    val context = LocalContext.current
-
-    when(viewModel.resetPasswordState.value){
-        LoginState.Success -> {
-            progressBarState = false
-        }
-        LoginState.Loading -> {
-            progressBarState = true
-        }
-
-        LoginState.Error -> {
-            Toast.makeText(context, "Password reset failed!",Toast.LENGTH_LONG).show()
-            progressBarState = false
-        }
-    }
+    val signInState = viewModel.signInState.collectAsState()
+    val resetPasswordState = viewModel.resetPasswordState.collectAsState()
     val scope = rememberCoroutineScope()
-    val loginState = remember { mutableStateOf<LoginState>(LoginState.Idle) }
-    when (loginState.value) {
-        LoginState.Success -> {
-            progressBarState = false
-        }
-        LoginState.Loading -> {
-            progressBarState = true
-        }
-        LoginState.Error -> {
-            progressBarState = false
-        }
 
-        LoginState.Idle -> {
-            progressBarState = false
-        }
-    }
-
-    if (loginState.value == LoginState.Success) {
-        navController.navigate(Screens.HomeScreen.route) {
-            popUpTo(Screens.SignInScreen.route) {
-                inclusive = true
+    signInState.value?.let { state->
+        when(state){
+            LoginState.Success ->{
+                progressBarState = false
+                navController.navigate(Screens.HomeScreen.route) {
+                    popUpTo(Screens.SignInScreen.route) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
             }
-            launchSingleTop = true
+
+            LoginState.Loading ->{
+                progressBarState = true
+            }
+
+            else ->{
+                progressBarState = false
+                Toast.makeText(context, signInState.value.toString(), Toast.LENGTH_LONG).show()
+            }
         }
     }
+
+    resetPasswordState.value?.let { state->
+        when(state){
+            LoginState.Success ->{
+                progressBarState = false
+                Toast.makeText(context, "Password reset successful!", Toast.LENGTH_LONG).show()
+            }
+
+            LoginState.Loading ->{
+                progressBarState = true
+            }
+
+            else ->{
+                progressBarState = false
+                Toast.makeText(context, signInState.value.toString(), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -193,9 +197,7 @@ fun SignInScreen(
                 val email = emailTextState
                 val password = passwordTextState
                 scope.launch {
-                    viewModel.signInUser(email, password).collect {
-                        loginState.value = it
-                    }
+                    viewModel.signInUser(email, password)
                 }
             }
 

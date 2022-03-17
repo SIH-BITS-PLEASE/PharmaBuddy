@@ -1,20 +1,23 @@
 package com.example.sihpharmaapp.authentication
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.sihpharmaapp.authentication.LoginState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class AuthViewModel : ViewModel() {
 
     private lateinit var auth: FirebaseAuth
 
-    var resetPasswordState = mutableStateOf<LoginState>(LoginState.Idle)
+    private val _resetPasswordState : MutableStateFlow<LoginState?> = MutableStateFlow(null)
+    val resetPasswordState : StateFlow<LoginState?> get() = _resetPasswordState
+    private val _signInState : MutableStateFlow<LoginState?> = MutableStateFlow(null)
+    val signInState : StateFlow<LoginState?> get() = _signInState
+    private val _signUpState : MutableStateFlow<LoginState?> = MutableStateFlow(null)
+    val signUpState : StateFlow<LoginState?> get() = _signUpState
 
     fun setupFirebaseAuth() {
         auth = Firebase.auth
@@ -24,20 +27,21 @@ class AuthViewModel : ViewModel() {
 
     fun getCurrentUser(): FirebaseUser? = auth.currentUser
 
-    suspend fun signInUser(
+    fun signInUser(
         email: String,
         password: String
-    ) = flow {
+    ) {
         try {
-            emit(LoginState.Loading)
-            auth.signInWithEmailAndPassword(email, password).await()
-            if (auth.currentUser != null) {
-                emit(LoginState.Success)
-            } else {
-                emit(LoginState.Error)
+            _signInState.value = LoginState.Loading
+            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task->
+                if(task.isSuccessful){
+                    _signInState.value = LoginState.Success
+                }else{
+                    _signInState.value = LoginState.Error(task.exception.toString())
+                }
             }
         } catch (e: Exception) {
-            emit(LoginState.Error)
+            _signInState.value = LoginState.Error()
         }
     }
 
@@ -45,33 +49,34 @@ class AuthViewModel : ViewModel() {
         email: String
     ) {
         try{
-            resetPasswordState.value = LoginState.Loading
+            _resetPasswordState.value = LoginState.Loading
             auth.sendPasswordResetEmail(email).addOnCompleteListener { task->
                 if(task.isSuccessful){
-                    resetPasswordState.value = LoginState.Success
+                    _resetPasswordState.value = LoginState.Success
                 }else{
-                    resetPasswordState.value = LoginState.Error
+                    _resetPasswordState.value = LoginState.Error(task.exception.toString())
                 }
             }
         }catch (e: Exception){
-            resetPasswordState.value = LoginState.Error
+            _resetPasswordState.value = LoginState.Error()
         }
     }
 
-    suspend fun signUpUser(
+    fun signUpUser(
         email: String,
         password: String
-    ) = flow {
+    ) {
         try {
-            emit(LoginState.Loading)
-            auth.createUserWithEmailAndPassword(email, password).await()
-            if (auth.currentUser != null) {
-                emit(LoginState.Success)
-            } else {
-                emit(LoginState.Error)
+            _signUpState.value = LoginState.Loading
+            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task->
+                if(task.isSuccessful){
+                    _signUpState.value = LoginState.Success
+                }else{
+                    _signUpState.value = LoginState.Error(task.exception.toString())
+                }
             }
         } catch (e: Exception) {
-            emit(LoginState.Error)
+            _signUpState.value = LoginState.Error(e.message.toString())
         }
     }
 }

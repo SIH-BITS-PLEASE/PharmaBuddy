@@ -1,33 +1,42 @@
 {
   "project_info": {
-    "project_number": "813458582435",
-    "project_id": "sihpharmaapp",
-    "storage_bucket": "sihpharmaapp.appspot.com"
+    "project_number": "1040019542629",
+    "firebase_url": "https://predev-sih-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "predev-sih",
+    "storage_bucket": "predev-sih.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:813458582435:android:b0ebf8723bdf9884ff8816",
+        "mobilesdk_app_id": "1:1040019542629:android:12d2f7d735dfa6498f6c8c",
         "android_client_info": {
           "package_name": "com.example.sihpharmaapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "813458582435-td8q0a8j1fi3jkuk5s47m1qe78p3oblq.apps.googleusercontent.com",
+          "client_id": "1040019542629-oeoh3sqs9144po6aq2efh4e70ro562pt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sihpharmaapp",
+            "certificate_hash": "edfef8b146ddd827e0f83ca3717a75c653dc5b58"
+          }
+        },
+        {
+          "client_id": "1040019542629-gtt605e9b5iic7relnup9asloi3215l1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAB3BJjruZZs1g_KLgkRudshIdpbwvCM8M"
+          "current_key": "AIzaSyDXBHB21j21-E2EKyoauzx4Uo-CsKhJXQk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "813458582435-td8q0a8j1fi3jkuk5s47m1qe78p3oblq.apps.googleusercontent.com",
+              "client_id": "1040019542629-gtt605e9b5iic7relnup9asloi3215l1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

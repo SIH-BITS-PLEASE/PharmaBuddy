@@ -1,5 +1,6 @@
-package com.example.railwayqrapp.authentication
+package com.example.sihpharmaapp.authentication
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,38 +13,33 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.sihpharmaapp.Screens
-import com.example.sihpharmaapp.authentication.AuthViewModel
-import com.example.sihpharmaapp.authentication.CustomButton
-import com.example.sihpharmaapp.authentication.CustomTextField
-import com.example.sihpharmaapp.authentication.LoginState
-import com.example.sihpharmaapp.authentication.isEmailValid
 import com.example.sihpharmaapp.ui.theme.buttonBackgroundColor
 import com.example.sihpharmaapp.ui.theme.fadedWhite
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
     navController: NavController,
     viewModel: AuthViewModel
 ) {
+    val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
     systemUiController.setNavigationBarColor(Color.Cyan)
     systemUiController.setSystemBarsColor(Color.Cyan)
@@ -74,38 +70,35 @@ fun SignUpScreen(
         var passwordState by remember {
             mutableStateOf("")
         }
-        val scope = rememberCoroutineScope()
         var progressBarState by remember {
             mutableStateOf(false)
         }
-        val signUpState = remember { mutableStateOf<LoginState>(LoginState.Idle) }
-        when (signUpState.value) {
-            LoginState.Success -> {
-                progressBarState = false
-            }
-            LoginState.Loading -> {
-                progressBarState = true
-            }
-            LoginState.Error -> {
-                progressBarState = false
-            }
 
-            LoginState.Idle -> {
-                progressBarState = false
-            }
-        }
+        val signUpState = viewModel.signUpState.collectAsState()
 
-        if (signUpState.value == LoginState.Success) {
-
-            // Save user to firebase database and navigate to home screen
-
-            navController.navigate(Screens.HomeScreen.route) {
-                popUpTo(Screens.SignUpScreen.route){
-                    inclusive = true
+        signUpState.value?.let { state->
+            when(state){
+                LoginState.Success ->{
+                    progressBarState = false
+                    navController.navigate(Screens.HomeScreen.route) {
+                        popUpTo(Screens.SignUpScreen.route){
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 }
-                launchSingleTop = true
+
+                LoginState.Loading ->{
+                    progressBarState = true
+                }
+
+                else ->{
+                    progressBarState = false
+                    Toast.makeText(context, signUpState.value.toString(), Toast.LENGTH_LONG).show()
+                }
             }
         }
+
         Text(
             modifier = Modifier
                 .weight(.15f)
@@ -206,11 +199,7 @@ fun SignUpScreen(
                 // Perform Sign Up
                 val email = emailState
                 val password = passwordState
-                scope.launch {
-                    viewModel.signUpUser(email, password).collect {
-                        signUpState.value = it
-                    }
-                }
+                viewModel.signUpUser(email, password)
             }
 
             if (progressBarState) CircularProgressIndicator(
