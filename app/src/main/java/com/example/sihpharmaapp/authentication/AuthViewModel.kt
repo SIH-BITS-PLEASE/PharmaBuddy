@@ -2,10 +2,8 @@ package com.example.sihpharmaapp.authentication
 
 import androidx.lifecycle.ViewModel
 import com.example.sihpharmaapp.data.User
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,8 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 class AuthViewModel : ViewModel() {
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var db: FirebaseFirestore
+    private val auth by lazy { Firebase.auth }
+    private val db by lazy { Firebase.firestore }
 
     private val _resetPasswordState: MutableStateFlow<ProgressState?> = MutableStateFlow(null)
     val resetPasswordState: StateFlow<ProgressState?> get() = _resetPasswordState
@@ -27,14 +25,6 @@ class AuthViewModel : ViewModel() {
 
     private val _saveUserState: MutableStateFlow<ProgressState?> = MutableStateFlow(null)
     val saveUserState: StateFlow<ProgressState?> get() = _saveUserState
-
-    fun setupFirebaseAuth() {
-        auth = Firebase.auth
-    }
-
-    fun setupFirestoreDB() {
-        db = Firebase.firestore
-    }
 
     fun isUserSignedIn(): Boolean = auth.currentUser != null
 

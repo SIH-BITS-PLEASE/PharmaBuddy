@@ -41,10 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.sihpharmaapp.Screens
+import com.example.sihpharmaapp.SystemColors
 import com.example.sihpharmaapp.ui.theme.buttonBackgroundColor
 import com.example.sihpharmaapp.ui.theme.fadedWhite
 import com.example.sihpharmaapp.ui.theme.homeBackground
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 @Composable
@@ -53,10 +53,11 @@ fun SignInScreen(
     viewModel: AuthViewModel
 ) {
     val context = LocalContext.current
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setNavigationBarColor(Color.Cyan)
-    systemUiController.setSystemBarsColor(Color.Cyan)
-    systemUiController.setStatusBarColor(fadedWhite)
+    SystemColors(
+        navigationBarColor = Color.Cyan,
+        systemBarsColor = Color.Cyan,
+        statusBarColor = fadedWhite
+    )
     var emailTextState by remember {
         mutableStateOf("")
     }

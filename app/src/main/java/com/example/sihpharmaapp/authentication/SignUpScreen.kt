@@ -31,10 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.sihpharmaapp.Screens
+import com.example.sihpharmaapp.SystemColors
 import com.example.sihpharmaapp.data.User
 import com.example.sihpharmaapp.ui.theme.buttonBackgroundColor
 import com.example.sihpharmaapp.ui.theme.fadedWhite
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun SignUpScreen(
@@ -42,10 +42,11 @@ fun SignUpScreen(
     viewModel: AuthViewModel
 ) {
     val context = LocalContext.current
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setNavigationBarColor(Color.Cyan)
-    systemUiController.setSystemBarsColor(Color.Cyan)
-    systemUiController.setStatusBarColor(fadedWhite)
+    SystemColors(
+        navigationBarColor = Color.Cyan,
+        systemBarsColor = Color.Cyan,
+        statusBarColor = fadedWhite
+    )
     Column(
         modifier = Modifier
             .fillMaxSize()

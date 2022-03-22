@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SIHPharmaApp</string>
+    <string name="sharedPrefName">LocationCoordinates</string>
 </resources>
