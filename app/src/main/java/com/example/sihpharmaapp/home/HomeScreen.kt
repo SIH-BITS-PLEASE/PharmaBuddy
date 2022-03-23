@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,14 +31,16 @@ fun HomeScreen(
         systemBarsColor = homeBackground,
         statusBarColor = homeBackground
     )
-    val lat = sharedPreferences.getString("latitude", null)
-    val long = sharedPreferences.getString("longitude", null)
+    if (homeViewModel.sharedPreferenceState.value) {
+        val lat = sharedPreferences.getString("latitude", null)
+        val long = sharedPreferences.getString("longitude", null)
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(homeBackground)
     ) {
-        Text(text = " Location, lat-> $lat, long -> $long")
+
     }
 }
