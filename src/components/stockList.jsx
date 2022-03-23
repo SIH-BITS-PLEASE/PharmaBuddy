@@ -39,25 +39,29 @@ function StockList() {
           <br />
           <hr />
           <table>
-            <tr>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Quantity</th>
-            </tr>
-            {medsList &&
-              medsList.map(({ name, quantity, price }) => {
-                return (
-                  <tr key={name}>
-                    <td>{name}</td>
-                    <td>{price}</td>
-                    <td>{quantity}</td>
-                  </tr>
-                );
-              })}
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {medsList &&
+                medsList.map(({ name, quantity, price }) => {
+                  return (
+                    <tr key={name}>
+                      <td>{name}</td>
+                      <td>{price}</td>
+                      <td>{quantity}</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
           </table>
           <hr />
           <br />
-          <button class="btn selected btn-fluid2" onClick={handleAdd}>
+          <button className="btn selected btn-fluid2" onClick={handleAdd}>
             Add Stock
           </button>
         </React.Fragment>

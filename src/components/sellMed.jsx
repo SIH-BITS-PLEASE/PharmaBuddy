@@ -52,9 +52,14 @@ function SellMed() {
   return (
     <div className="container">
       <form action="">
-        <input class="btn" type="text" placeholder="Med Name" ref={nameRef} />
         <input
-          class="btn"
+          className="btn"
+          type="text"
+          placeholder="Med Name"
+          ref={nameRef}
+        />
+        <input
+          className="btn"
           type="text"
           placeholder="quantity"
           ref={quantityRef}
@@ -62,7 +67,7 @@ function SellMed() {
         <br />
         <br />
         <input
-          class="btn selected btn-fluid2"
+          className="btn selected btn-fluid2"
           type="button"
           value="Sell Stock"
           onClick={handleAdd}
