@@ -23,6 +23,7 @@ function AddMed() {
           for (var i = 0; i < oldmeds.length; i++) {
             if (oldmeds[i].name === nameRef.current.value) {
               oldmeds[i].quantity += parseInt(quantityRef.current.value);
+              oldmeds[i].price = parseInt(priceRef.current.value);
               found = true;
               break;
             }
@@ -30,14 +31,12 @@ function AddMed() {
           if (!found) {
             oldmeds.push({
               name: nameRef.current.value,
+              price: parseInt(priceRef.current.value),
               quantity: parseInt(quantityRef.current.value),
             });
           }
           data.meds = oldmeds;
-          await setDoc(ref, data)
-            .then(alert("Updated"))
-            .then(console.log(data))
-            .then(console.log(oldmeds));
+          await setDoc(ref, data).then(alert("Updated"));
         } catch (e) {
           alert(e.message);
         }
@@ -48,6 +47,7 @@ function AddMed() {
   }, [tokenAdd, user.uid]);
   const nameRef = useRef(null);
   const quantityRef = useRef(null);
+  const priceRef = useRef(null);
   if (!user) return <Navigate to="/" />;
   const handleAdd = (e) => {
     e.preventDefault();
@@ -58,6 +58,7 @@ function AddMed() {
       <form action="">
         <input type="text" placeholder="Med Name" ref={nameRef} />
         <input type="text" placeholder="quantity" ref={quantityRef} />
+        <input type="text" placeholder="price" ref={priceRef} />
         <input type="button" value="Add Stock" onClick={handleAdd} />
       </form>
     </div>

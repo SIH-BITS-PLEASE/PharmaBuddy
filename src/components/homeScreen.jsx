@@ -4,7 +4,6 @@ import { Navigate } from "react-router-dom";
 import StockList from "./stockList";
 import { doc, getDoc } from "firebase/firestore";
 import db from "../firebase";
-import AddMed from "./addMed";
 
 function HomeScreen() {
   const user = userStore.getState().user;
@@ -23,7 +22,7 @@ function HomeScreen() {
 
   return (
     <React.Fragment>
-      {tokenHome ? <Navigate to="/filldetails" /> : <AddMed />}
+      {tokenHome ? <Navigate to="/filldetails" /> : <StockList />}
     </React.Fragment>
   );
 }
