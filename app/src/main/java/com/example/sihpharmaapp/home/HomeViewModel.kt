@@ -6,13 +6,16 @@ import androidx.lifecycle.ViewModel
 import com.example.sihpharmaapp.data.PharmacyDetails
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class HomeViewModel : ViewModel() {
     private val db by lazy { Firebase.firestore }
     val sharedPreferenceState = mutableStateOf(false)
     val progressBarState = mutableStateOf(true)
-    val pharmaciesList = flow<PharmacyDetails> {
+    fun getPharmaciesList() = flow<PharmacyDetails> {
+        Log.d("DataTest", "HERE2!!")
         val ref = db.collection("Pharma")
         ref.addSnapshotListener { snapshot, error ->
             Log.d("DataTest", "HERE!!")
@@ -23,9 +26,11 @@ class HomeViewModel : ViewModel() {
                 return@addSnapshotListener
             }
             for (dc in snapshot!!.documentChanges) {
-                Log.d("DataTest", dc.document.data.toString())
                 if (dc.type == com.google.firebase.firestore.DocumentChange.Type.ADDED) {
                     Log.d("DataTest", dc.document.data.toString())
+                    dc.document.data.map {
+                        it.value to PharmacyDetails::class.java
+                    }
                     // val address: String = dc.document.data.getValue("address") as String
                     // Log.d("DataTest", "address -> $address")
                     // val location: List<String> = dc.document.data.getValue("location") as List<String>
@@ -41,5 +46,5 @@ class HomeViewModel : ViewModel() {
                 }
             }
         }
-    }
+    }.flowOn(Dispatchers.IO)
 }

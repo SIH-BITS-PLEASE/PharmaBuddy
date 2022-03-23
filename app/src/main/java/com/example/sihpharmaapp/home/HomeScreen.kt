@@ -36,15 +36,14 @@ fun HomeScreen(
     if (homeViewModel.sharedPreferenceState.value) {
         val lat = sharedPreferences.getString("latitude", null)
         val long = sharedPreferences.getString("longitude", null)
-
-        val pharmacy = homeViewModel.pharmaciesList.collectAsState(initial = null)
+        val ps = homeViewModel.getPharmaciesList().collectAsState(initial = null)
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(homeBackground)
         ) {
-            pharmacy.value?.let { it ->
+            ps.value?.let { it ->
                 item {
                     Text(text = "Pharmacy : address -> ${it.address}, location -> ${it.location}, name -> ${it.name}, id -> ${it.id}")
                 }
