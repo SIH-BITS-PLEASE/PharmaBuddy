@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.sihpharmaapp.data.PharmacyDetails
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 
 class HomeViewModel : ViewModel() {
     private val db by lazy { Firebase.firestore }
@@ -46,5 +44,5 @@ class HomeViewModel : ViewModel() {
                 }
             }
         }
-    }.flowOn(Dispatchers.IO)
+    }
 }
