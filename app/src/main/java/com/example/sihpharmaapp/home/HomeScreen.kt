@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.example.sihpharmaapp.SystemColors
 import com.example.sihpharmaapp.authentication.AuthViewModel
+import com.example.sihpharmaapp.data.PharmacyDetails
 import com.example.sihpharmaapp.ui.theme.homeBackground
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
@@ -21,6 +22,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     sharedPreferences: SharedPreferences
 ) {
+    homeViewModel.getPharmaciesList()
     SystemColors(
         navigationBarColor = homeBackground,
         systemBarsColor = homeBackground,
@@ -37,16 +39,20 @@ fun HomeScreen(
         val lat = sharedPreferences.getString("latitude", null)
         val long = sharedPreferences.getString("longitude", null)
     }
-    val ps = homeViewModel.getPharmaciesList().collectAsState(initial = null)
+    val list = homeViewModel.pharmaciesListState.collectAsState()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(homeBackground)
     ) {
-        ps.value?.let { it ->
+        list.value?.forEach { pharmacy ->
             item {
-                Text(text = "Pharmacy : address -> ${it.address}, location -> ${it.location}, name -> ${it.name}, id -> ${it.id}")
+                Text(text = "Pharmacy : address -> ${pharmacy.address}, location -> ${pharmacy.location}, name -> ${pharmacy.name}, id -> ${pharmacy.id}")
             }
         }
     }
+}
+
+@Composable
+fun ListItem(pharmacyDetails: PharmacyDetails) {
 }

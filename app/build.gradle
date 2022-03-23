@@ -79,4 +79,9 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
 
     implementation 'com.google.android.gms:play-services-location:19.0.1'
+
+    implementation 'com.beust:klaxon:5.5'
+    implementation 'androidx.compose.runtime:runtime-livedata:1.0.0-beta01'
+    implementation "androidx.activity:activity-compose:1.4.0"
+
 }
