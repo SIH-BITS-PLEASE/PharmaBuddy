@@ -1,26 +1,39 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import userStore from "../stores/userStore";
-import { SET_MEDS } from "../constants";
+import db from "../firebase";
+import { getDoc, doc } from "firebase/firestore";
 
 function StockList() {
   const [medsList, setMedsList] = useState(userStore.getState().meds);
-
-  if (!medsList) {
-    // Fetch and Update MedsList
-    userStore.dispatch({
-      type: SET_MEDS,
-      payload: [{ name: "disprin", quantity: 5 }],
-    });
-    setMedsList([{ name: "disprin", quantity: 5 }]);
-  }
-  console.log(medsList);
+  const user = userStore.getState().user;
+  useEffect(() => {
+    async function getmeds() {
+      const ref = doc(db, "Pharma", user.uid);
+      const docSnap = await getDoc(ref);
+      const data = docSnap.data();
+      setMedsList(data.meds);
+    }
+    getmeds();
+  });
   return (
     <React.Fragment>
       <table>
-        {medsList.map(({ name }) => {
-          return <tr key={name}>{name}</tr>;
-        })}
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+        </tr>
+        {medsList &&
+          medsList.map(({ name, quantity, price }) => {
+            return (
+              <tr key={name}>
+                <td>{name}</td>
+                <td>{quantity}</td>
+                <td>{price}</td>
+              </tr>
+            );
+          })}
       </table>
     </React.Fragment>
   );
