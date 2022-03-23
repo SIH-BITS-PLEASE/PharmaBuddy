@@ -5,6 +5,7 @@ import HomeScreen from "./components/homeScreen";
 import ForgotPassword from "./components/forgotPassword";
 import PharmaForm from "./components/pharmaForm";
 import AddMed from "./components/addMed";
+import "./style.css";
 
 function App() {
   return (

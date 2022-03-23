@@ -8,8 +8,9 @@ import db from "../firebase";
 function AddMed() {
   const user = userStore.getState().user;
   const [tokenAdd, setTokenAdd] = useState(false);
+  const [redirect, setRedirect] = useState(false);
   useEffect(() => {
-    if (!user.uid) return;
+    if (!user) return;
     const code = async () => {
       const ref = doc(db, "Pharma", user.uid);
       const docSnap = await getDoc(ref);
@@ -29,12 +30,13 @@ function AddMed() {
           if (!found) {
             oldmeds.push({
               name: nameRef.current.value,
-              price: parseInt(priceRef.current.value),
               quantity: parseInt(quantityRef.current.value),
+              price: parseInt(priceRef.current.value),
             });
           }
           data.meds = oldmeds;
           await setDoc(ref, data).then(alert("Updated"));
+          setRedirect(true);
         } catch (e) {
           alert(e.message);
         }
@@ -42,7 +44,7 @@ function AddMed() {
     };
     code();
     setTokenAdd(false);
-  }, [tokenAdd, user.uid]);
+  }, [tokenAdd]);
   const nameRef = useRef(null);
   const quantityRef = useRef(null);
   const priceRef = useRef(null);
@@ -53,12 +55,28 @@ function AddMed() {
   };
   return (
     <div className="container">
-      <form action="">
-        <input type="text" placeholder="Med Name" ref={nameRef} />
-        <input type="text" placeholder="quantity" ref={quantityRef} />
-        <input type="text" placeholder="price" ref={priceRef} />
-        <input type="button" value="Add Stock" onClick={handleAdd} />
-      </form>
+      {redirect ? (
+        <Navigate to="/home" />
+      ) : (
+        <form action="">
+          <input class="btn" type="text" placeholder="Med Name" ref={nameRef} />
+          <input
+            class="btn"
+            type="text"
+            placeholder="quantity"
+            ref={quantityRef}
+          />
+          <input class="btn" type="text" placeholder="price" ref={priceRef} />
+          <br />
+          <br />
+          <input
+            class="btn selected btn-fluid2"
+            type="button"
+            value="Add Stock"
+            onClick={handleAdd}
+          />
+        </form>
+      )}
     </div>
   );
 }
