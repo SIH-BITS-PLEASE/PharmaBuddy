@@ -10,6 +10,7 @@ function HomeScreen() {
   const [tokenHome, setTokenHome] = useState(false);
   useEffect(() => {
     const fetchPharma = async () => {
+      if (!user) return;
       if (!user.uid) return;
       const ref = doc(db, "Pharma", user.uid);
       const docSnap = await getDoc(ref);

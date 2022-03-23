@@ -23,7 +23,6 @@ function Index() {
       passwordRef.current.value
     )
       .then((authUser) => {
-        console.log(authUser);
         userStore.dispatch({ type: SET_USER, payload: authUser });
         setRedirect(true);
       })
