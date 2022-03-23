@@ -10,7 +10,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/addMed" element={<AddMed />} />
+        <Route path="/addmeds" element={<AddMed />} />
         <Route path="/filldetails" element={<PharmaForm />} />
         <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/home" element={<HomeScreen />} />
