@@ -14,6 +14,7 @@ function PharmaForm() {
       try {
         const ref = doc(db, "Pharma", userStore.getState().user.uid);
         const payload = {
+          id: userStore.getState().user.uid,
           name: nameRef.current.value,
           address: addRef.current.value,
           meds: [],
