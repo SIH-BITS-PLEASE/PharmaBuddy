@@ -15,8 +15,6 @@ function AddMed() {
       const docSnap = await getDoc(ref);
       var data = docSnap.data();
       var oldmeds = data.meds;
-      console.log(data);
-      console.log(oldmeds);
       if (tokenAdd) {
         try {
           var found = false;
