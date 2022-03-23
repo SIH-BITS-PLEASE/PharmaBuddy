@@ -33,7 +33,7 @@ function SellMed() {
             alert("Med not found");
           }
           data.meds = oldmeds;
-          await setDoc(ref, data).then(alert("Updated"));
+          await setDoc(ref, data);
         } catch (e) {
           alert(e.message);
         }

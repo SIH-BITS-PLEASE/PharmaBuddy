@@ -59,11 +59,40 @@ function PharmaForm() {
         <Navigate to="/home" />
       ) : (
         <form>
-          <input ref={nameRef} type="text" placeholder="Pharma Name" />
-          <input ref={addRef} type="text" placeholder="Address" />
-          <input ref={otRef} type="text" placeholder="Opening Time" />
-          <input ref={ctRef} type="text" placeholder="Closing Time" />
-          <input type="button" value="submit" onClick={handleSubmit} />
+          <input
+            className="box"
+            ref={nameRef}
+            type="text"
+            placeholder="Pharma Name"
+          />
+          <br />
+          <input
+            className="box"
+            ref={addRef}
+            type="text"
+            placeholder="Address"
+          />
+          <br />
+          <input
+            className="box"
+            ref={otRef}
+            type="text"
+            placeholder="Opening Time"
+          />
+          <br />
+          <input
+            className="box"
+            ref={ctRef}
+            type="text"
+            placeholder="Closing Time"
+          />
+          <br />
+          <input
+            className="btn selected btn-fluid2"
+            type="button"
+            value="submit"
+            onClick={handleSubmit}
+          />
         </form>
       )}
     </div>

@@ -35,7 +35,7 @@ function AddMed() {
             });
           }
           data.meds = oldmeds;
-          await setDoc(ref, data).then(alert("Updated"));
+          await setDoc(ref, data);
           setRedirect(true);
         } catch (e) {
           alert(e.message);
