@@ -2,9 +2,11 @@ package com.example.sihpharmaapp.home
 
 import android.content.SharedPreferences
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.example.sihpharmaapp.SystemColors
@@ -34,13 +36,19 @@ fun HomeScreen(
     if (homeViewModel.sharedPreferenceState.value) {
         val lat = sharedPreferences.getString("latitude", null)
         val long = sharedPreferences.getString("longitude", null)
-    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(homeBackground)
-    ) {
+        val pharmacy = homeViewModel.pharmaciesList.collectAsState(initial = null)
 
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(homeBackground)
+        ) {
+            pharmacy.value?.let { it ->
+                item {
+                    Text(text = "Pharmacy : address -> ${it.address}, location -> ${it.location}, name -> ${it.name}, id -> ${it.id}")
+                }
+            }
+        }
     }
 }

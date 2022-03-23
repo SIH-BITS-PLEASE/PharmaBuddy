@@ -1,5 +1,6 @@
 package com.example.sihpharmaapp.home
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.sihpharmaapp.data.PharmacyDetails
@@ -10,13 +11,34 @@ import kotlinx.coroutines.flow.flow
 class HomeViewModel : ViewModel() {
     private val db by lazy { Firebase.firestore }
     val sharedPreferenceState = mutableStateOf(false)
-    val pharmaciesList = flow<List<PharmacyDetails>> {
+    val progressBarState = mutableStateOf(true)
+    val pharmaciesList = flow<PharmacyDetails> {
         val ref = db.collection("Pharma")
-        ref.get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                emit(task.result as List<PharmacyDetails>)
-            } else {
-
+        ref.addSnapshotListener { snapshot, error ->
+            Log.d("DataTest", "HERE!!")
+            if (error != null) {
+                // error
+                Log.d("DataTest", "Error")
+                progressBarState.value = false
+                return@addSnapshotListener
+            }
+            for (dc in snapshot!!.documentChanges) {
+                Log.d("DataTest", dc.document.data.toString())
+                if (dc.type == com.google.firebase.firestore.DocumentChange.Type.ADDED) {
+                    Log.d("DataTest", dc.document.data.toString())
+                    // val address: String = dc.document.data.getValue("address") as String
+                    // Log.d("DataTest", "address -> $address")
+                    // val location: List<String> = dc.document.data.getValue("location") as List<String>
+                    // val meds: List<MedicineDetails> = dc.document.data.getValue("meds") as List<MedicineDetails>
+                    // val name: String = dc.document.data.getValue("name") as String
+                    // val id: String = dc.document.data.getValue("id") as String
+                    // Log.d("DataTest", "address -> $address, name -> $name, id -> $id")
+                    // viewModelScope.launch {
+                    //     emit(PharmacyDetails(address,location,meds,name,id))
+                    // }
+                } else {
+                    Log.d("DataTest", "Else block -> ${dc.document.data}")
+                }
             }
         }
     }
