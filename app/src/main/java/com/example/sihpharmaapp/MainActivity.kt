@@ -27,6 +27,7 @@ class MainActivity : ComponentActivity() {
     private var longitude: Double? = null
     private lateinit var sharedPref: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+    private lateinit var homeViewModel: HomeViewModel
     private val gpsLocationListener: LocationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
             locationByGps = location
@@ -63,7 +64,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SIHPharmaAppTheme {
                 val authViewModel = viewModel<AuthViewModel>()
-                val homeViewModel = viewModel<HomeViewModel>()
+                homeViewModel = viewModel()
                 val navController = rememberNavController()
                 val startDestination = if (authViewModel.isUserSignedIn()) Screens.HomeScreen.route
                 else Screens.SignInScreen.route
@@ -147,7 +148,6 @@ class MainActivity : ComponentActivity() {
                     networkLocationListener
                 )
             }
-
             checkAccuracy()
         }
     }
