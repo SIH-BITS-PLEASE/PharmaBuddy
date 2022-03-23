@@ -7,7 +7,9 @@ import { Navigate } from "react-router-dom";
 function PharmaForm() {
   const nameRef = useRef(null);
   const addRef = useRef(null);
-  const [location, setLocation] = useState({ lat: 0, long: 0 });
+  const ctRef = useRef(null);
+  const otRef = useRef(null);
+  const [location, setLocation] = useState([0, 0]);
   const [token, setToken] = useState(false);
   const [redirect, setRedirect] = useState(false);
   useEffect(() => {
@@ -29,6 +31,21 @@ function PharmaForm() {
     }
     if (token) run();
     setToken(false);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          var latitude = position.coords.latitude;
+          var longitude = position.coords.longitude;
+          setLocation([latitude, longitude]);
+        },
+        function error(msg) {
+          alert("Please enable your GPS position feature.");
+        },
+        { maximumAge: 600000, timeout: 5000, enableHighAccuracy: true }
+      );
+    } else {
+      alert("Geolocation API is not supported in your browser.");
+    }
   }, [token]);
   if (!userStore.getState().user) return <Navigate to="/" />;
   const handleSubmit = (e) => {
@@ -36,21 +53,6 @@ function PharmaForm() {
     setToken(true);
   };
 
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function (position) {
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
-        setLocation({ lat: latitude, lon: longitude });
-      },
-      function error(msg) {
-        alert("Please enable your GPS position future.");
-      },
-      { maximumAge: 600000, timeout: 5000, enableHighAccuracy: true }
-    );
-  } else {
-    alert("Geolocation API is not supported in your browser.");
-  }
   return (
     <div className="container">
       {redirect ? (
@@ -59,6 +61,8 @@ function PharmaForm() {
         <form>
           <input ref={nameRef} type="text" placeholder="Pharma Name" />
           <input ref={addRef} type="text" placeholder="Address" />
+          <input ref={otRef} type="text" placeholder="Opening Time" />
+          <input ref={ctRef} type="text" placeholder="Closing Time" />
           <input type="button" value="submit" onClick={handleSubmit} />
         </form>
       )}

@@ -47,7 +47,7 @@ function Index() {
   };
 
   return (
-    <div className="container">
+    <div>
       {redirect ? (
         <Navigate to="/home" />
       ) : (

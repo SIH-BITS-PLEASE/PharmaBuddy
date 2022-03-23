@@ -1,0 +1,24 @@
+NOTES
+
+Changes
+
+
+
+(AddMed)
+NewHTML
+<div className="container">
+      <h1> Pharmacist Portal </h1><hr>
+      <form action="">
+        <input class="btn" type="text" placeholder="Med Name" ref={nameRef} />
+        <input class="btn" type="text" placeholder="quantity" ref={quantityRef} />
+		<br/><br/>
+        <input class="btn selected btn-fluid2" type="button" value="Add Stock" onClick={handleAdd} />
+      </form>
+    </div>
+
+
+(stockList)
+Original:
+<div id="root">
+Modified:
+<h1> Pharmacist Portal </h1><hr><div id="root" class="container dark">
