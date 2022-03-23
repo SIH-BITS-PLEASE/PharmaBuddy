@@ -9,7 +9,6 @@ import SellMed from "./sellMed";
 function StockList() {
   const [medsList, setMedsList] = useState(userStore.getState().meds);
   const [redirect, setRedirect] = useState(false);
-  const [addS, setaddS] = useState(false);
   const user = userStore.getState().user;
   useEffect(() => {
     async function getmeds() {

@@ -22,6 +22,8 @@ function PharmaForm() {
           address: addRef.current.value,
           meds: [],
           location: location,
+          opening: otRef.current.value,
+          closing: ctRef.current.value,
         };
         await setDoc(ref, payload).then(setRedirect(true));
       } catch (e) {

@@ -7,7 +7,6 @@ import {
 import { Navigate } from "react-router";
 import userStore from "../stores/userStore";
 import { SET_USER } from "../constants";
-import { Link } from "react-router-dom";
 
 function Index() {
   const [redirect, setRedirect] = useState(false);
