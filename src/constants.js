@@ -1,0 +1,6 @@
+export const SET_USER = "SET_USER";
+export const LOGOUT_USER = "LOGOUT_USER";
+export const LOGIN_FAILED = "LOGIN_FAILED";
+export const USER_REGISTERED_SUC = "USER_REGISTERED_SUCCESSFULLY";
+export const USER_REGISTERED_FAI = "USER_REGISTERED_FAILED";
+export const SET_MEDS = "SET_MEDS";
