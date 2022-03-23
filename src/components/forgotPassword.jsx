@@ -18,8 +18,19 @@ function ForgotPassword() {
   return (
     <div className="container">
       <form action="">
-        <input type="email" placeholder="email" ref={emailRef} />
-        <input type="submit" value="Submit" onClick={handleForm} />
+        <input
+          className="box"
+          type="email"
+          placeholder="Email"
+          ref={emailRef}
+        />
+        <br />
+        <input
+          className="btn selected btn-fluid2"
+          type="submit"
+          value="Submit"
+          onClick={handleForm}
+        />
       </form>
     </div>
   );

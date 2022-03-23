@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 
 function Index() {
   const [redirect, setRedirect] = useState(false);
+  const [forgot, setForgot] = useState(false);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
@@ -46,18 +47,54 @@ function Index() {
       });
   };
 
+  const handleForgot = () => {
+    setForgot(true);
+  };
   return (
     <div>
       {redirect ? (
         <Navigate to="/home" />
       ) : (
-        <form>
-          <input type="email" placeholder="Email" ref={emailRef} />
-          <input type="password" placeholder="Password" ref={passwordRef} />
-          <input type="submit" onClick={handleLogin} />
-          <input type="submit" value="Register" onClick={handleRegister} />
-          <Link to="/forgot">Forgot Password</Link>
-        </form>
+        <React.Fragment>
+          {forgot ? (
+            <Navigate to="/forgot" />
+          ) : (
+            <form>
+              <input
+                className="box"
+                type="email"
+                placeholder="Email"
+                ref={emailRef}
+              />
+              <br />
+              <input
+                className="box"
+                type="password"
+                placeholder="Password"
+                ref={passwordRef}
+              />
+              <br />
+              <input
+                className="btn selected btn-fluid2"
+                type="submit"
+                onClick={handleLogin}
+              />
+              <br />
+              <input
+                className="btn selected btn-fluid2"
+                type="submit"
+                value="Register"
+                onClick={handleRegister}
+              />
+              <input
+                className="btn selected btn-fluid2"
+                type="submit"
+                value="Forgot"
+                onClick={handleForgot}
+              />
+            </form>
+          )}
+        </React.Fragment>
       )}
     </div>
   );
