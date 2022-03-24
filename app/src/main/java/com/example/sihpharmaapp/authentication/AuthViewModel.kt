@@ -1,5 +1,6 @@
 package com.example.sihpharmaapp.authentication
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.sihpharmaapp.data.User
 import com.google.firebase.auth.FirebaseUser
@@ -37,6 +38,7 @@ class AuthViewModel : ViewModel() {
             _saveUserState.value = ProgressState.Loading
             val userRef = db.collection("users").document(user.userId)
             userRef.set(user).addOnCompleteListener { task ->
+                Log.d("requestTest", "on Complete Listeners!!")
                 if (task.isSuccessful) {
                     _saveUserState.value = ProgressState.Success
                 } else {
@@ -55,6 +57,7 @@ class AuthViewModel : ViewModel() {
         try {
             _signInState.value = ProgressState.Loading
             auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                Log.d("requestTest", "on Complete Listeners!!")
                 if (task.isSuccessful) {
                     _signInState.value = ProgressState.Success
                 } else {
@@ -72,6 +75,7 @@ class AuthViewModel : ViewModel() {
         try {
             _resetPasswordState.value = ProgressState.Loading
             auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+                Log.d("requestTest", "on Complete Listeners!!")
                 if (task.isSuccessful) {
                     _resetPasswordState.value = ProgressState.Success
                 } else {
@@ -90,6 +94,7 @@ class AuthViewModel : ViewModel() {
         try {
             _signUpState.value = ProgressState.Loading
             auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                Log.d("requestTest", "on Complete Listeners!!")
                 if (task.isSuccessful) {
                     _signUpState.value = ProgressState.Success
                 } else {
