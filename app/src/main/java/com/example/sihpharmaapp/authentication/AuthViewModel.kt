@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class AuthViewModel : ViewModel() {
 
-    private val auth by lazy { Firebase.auth }
+    val auth by lazy { Firebase.auth }
     private val db by lazy { Firebase.firestore }
 
     private val _resetPasswordState: MutableStateFlow<ProgressState?> = MutableStateFlow(null)

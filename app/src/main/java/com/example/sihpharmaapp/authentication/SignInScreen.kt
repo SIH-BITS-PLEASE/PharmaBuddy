@@ -40,6 +40,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.sihpharmaapp.CustomButtonRect
 import com.example.sihpharmaapp.Screens
 import com.example.sihpharmaapp.SystemColors
 import com.example.sihpharmaapp.ui.theme.buttonBackgroundColor
@@ -289,7 +290,7 @@ fun ResetDialogBox(
                 modifier = Modifier.padding(all = 8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                CustomButton(
+                CustomButtonRect(
                     text = "Continue",
                     backgroundColor = buttonBackgroundColor,
                     enabled = enabled
@@ -299,7 +300,7 @@ fun ResetDialogBox(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                CustomButton(
+                CustomButtonRect(
                     text = "Cancel",
                     backgroundColor = buttonBackgroundColor,
                     enabled = true

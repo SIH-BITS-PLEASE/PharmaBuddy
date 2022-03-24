@@ -34,7 +34,7 @@ fun AppNavHost(
         }
 
         composable(Screens.HomeScreen.route) {
-            HomeScreen(authViewModel, homeViewModel, sharedPreferences)
+            HomeScreen(navController, authViewModel, homeViewModel, sharedPreferences)
         }
     }
 }

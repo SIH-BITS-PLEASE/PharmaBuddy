@@ -5,19 +5,24 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -29,18 +34,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.sihpharmaapp.CustomButtonRect
+import com.example.sihpharmaapp.R
+import com.example.sihpharmaapp.Screens
 import com.example.sihpharmaapp.SystemColors
 import com.example.sihpharmaapp.authentication.AuthViewModel
 import com.example.sihpharmaapp.authentication.CustomTextField
 import com.example.sihpharmaapp.data.MedicineDetails
 import com.example.sihpharmaapp.data.PharmacyDetails
 import com.example.sihpharmaapp.ui.theme.buttonBackgroundColor
+import com.example.sihpharmaapp.ui.theme.darkGray
 import com.example.sihpharmaapp.ui.theme.darkRed
 import com.example.sihpharmaapp.ui.theme.dullBlue
+import com.example.sihpharmaapp.ui.theme.dullGreen
+import com.example.sihpharmaapp.ui.theme.dullWhite
+import com.example.sihpharmaapp.ui.theme.homeBackground
 import com.example.sihpharmaapp.ui.theme.lightBlue
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import java.text.DecimalFormat
@@ -52,6 +69,7 @@ var long: Double? = null
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
+    navController: NavController,
     authViewModel: AuthViewModel,
     homeViewModel: HomeViewModel,
     sharedPreferences: SharedPreferences
@@ -60,12 +78,14 @@ fun HomeScreen(
     val timeHr = calendar.get(Calendar.HOUR_OF_DAY)
     val currTime = calendar.get(Calendar.MINUTE) + (timeHr * 60)
     homeViewModel.getPharmaciesList()
+    var alertState by remember {
+        mutableStateOf(false)
+    }
     SystemColors(
         navigationBarColor = dullBlue,
         systemBarsColor = dullBlue,
         statusBarColor = dullBlue
     )
-    val user = authViewModel.getCurrentUser()
     val context = LocalContext.current
     if (homeViewModel.sharedPreferenceState.value) {
         lat = sharedPreferences.getString("latitude", null)!!.toDouble()
@@ -138,7 +158,105 @@ fun HomeScreen(
                 }
             }
         }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+        ) {
+            Surface(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(12.dp)
+                    .height(50.dp)
+                    .clickable {
+                        alertState = true
+                    },
+                shape = RoundedCornerShape(4.dp),
+                elevation = 4.dp,
+                color = darkRed
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(id = R.drawable.exit),
+                        contentDescription = "log out",
+                        tint = dullWhite
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Log Out",
+                        color = dullWhite,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
+        }
+        if (alertState) {
+            LogOutAlert(
+                onCancelClicked = { alertState = false },
+                onLogOutClicked = {
+                    authViewModel.auth.signOut()
+                    navController.navigate(Screens.SignInScreen.route) {
+                        popUpTo(Screens.HomeScreen.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
     }
+}
+
+@Composable
+fun LogOutAlert(
+    onCancelClicked: () -> Unit,
+    onLogOutClicked: () -> Unit
+) {
+    AlertDialog(
+        backgroundColor = homeBackground,
+        onDismissRequest = {},
+        title = {
+            Text(
+                text = "Are you sure you want to log out?",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.DarkGray
+            )
+        },
+        buttons = {
+            Row(
+                modifier = Modifier.padding(all = 8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                CustomButtonRect(
+                    text = "Log Out",
+                    backgroundColor = darkRed,
+                    enabled = true
+                ) {
+                    onLogOutClicked()
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                CustomButtonRect(
+                    text = "Cancel",
+                    backgroundColor = dullGreen,
+                    enabled = true
+                ) {
+                    onCancelClicked()
+                }
+            }
+        },
+    )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -151,34 +269,93 @@ fun ListItem(
     navigateClicked: () -> Unit
 ) {
     Surface(
-        modifier = modifier.padding(10.dp),
-        onClick = { /*TODO*/ },
+        modifier = modifier
+            .padding(6.dp)
+            .padding(top = 10.dp, bottom = 10.dp),
+        onClick = {},
         color = lightBlue,
-        shape = RoundedCornerShape(20),
+        shape = RoundedCornerShape(4.dp),
         elevation = 2.dp
     ) {
+        val pLat = pharmacyDetails.location?.get(0)
+        val pLong = pharmacyDetails.location?.get(1)
         Column {
-            Row {
-                Text(pharmacyDetails.name, modifier.weight(.3f), color = Color.Black)
-                Text(pharmacyDetails.address, modifier.weight(.7f))
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TextWithImage(
+                    painter = painterResource(id = R.drawable.building),
+                    text = pharmacyDetails.name
+                )
+                TextWithImage(
+                    painter = painterResource(id = R.drawable.building),
+                    text = pharmacyDetails.address
+                )
             }
-
-            Row {
-                Text(medicineDetails.name, modifier.weight(.6f))
-                Text(medicineDetails.quantity.toString(), modifier.weight(.3f))
-            }
-
-            Row {
-                Text("Enter distance here!!", modifier.weight(.3f))
-                Button(
-                    onClick = { navigateClicked() },
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green)
-                ) {
-                    Text("View on map.")
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TextWithImage(
+                    painter = painterResource(id = R.drawable.medicine_name),
+                    text = medicineDetails.name
+                )
+                TextWithImage(
+                    painter = painterResource(id = R.drawable.number),
+                    text = medicineDetails.quantity.toString()
+                )
+                // navigation button
+                CustomButtonRect(text = "Navigate", backgroundColor = dullGreen, enabled = true) {
+                    navigateClicked()
                 }
             }
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                if (pLat != null && pLong != null && lat != null && long != null) {
+                    val dist = distanceBetweenPoints(pLat, pLong, lat!!, long!!)
+                    TextWithImage(
+                        painter = painterResource(id = R.drawable.distance),
+                        text = dist.toString()
+                    )
+                }
+                TextWithImage(
+                    painter = painterResource(id = R.drawable.timer),
+                    text = "$closingIn mins"
+                )
+                TextWithImage(
+                    painter = painterResource(id = R.drawable.price),
+                    text = medicineDetails.price.toString()
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
         }
+    }
+}
+
+@Composable
+fun TextWithImage(
+    painter: Painter,
+    text: String
+) {
+    Row {
+        Icon(painter = painter, contentDescription = text)
+        Spacer(modifier = Modifier.width(2.dp))
+        Text(text = text, maxLines = 1, overflow = TextOverflow.Ellipsis, color = darkGray)
     }
 }
 
@@ -304,7 +481,7 @@ fun SearchSection(
     }
 }
 
-fun distanceBetweenPoints(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+fun distanceBetweenPoints(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {
     val Radius = 6371
     val dLat = Math.toRadians(lat2 - lat1)
     val dLon = Math.toRadians(lon2 - lon1)
@@ -316,12 +493,5 @@ fun distanceBetweenPoints(lat1: Double, lon1: Double, lat2: Double, lon2: Double
     val valueResult = Radius * c
     val km = valueResult / 1
     val newFormat = DecimalFormat("####")
-    val kmInDec: Int = Integer.valueOf(newFormat.format(km))
-    val meter = valueResult % 1000
-    val meterInDec: Int = Integer.valueOf(newFormat.format(meter))
-    Log.i(
-        "Radius Value", "" + valueResult + "   KM  " + kmInDec
-            + " Meter   " + meterInDec
-    )
-    return Radius * c
+    return Integer.valueOf(newFormat.format(km))
 }
